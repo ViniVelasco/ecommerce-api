@@ -77,7 +77,6 @@ public class EcommerceApiApplication implements CommandLineRunner {
 		Product p3 = new Product(null, "Mouse", 80.00);
 		
 		categoryRepository.saveAll(Arrays.asList(cat1, cat2));
-		productRepository.saveAll(Arrays.asList(p1, p2, p3));
 		
 		State st1 = new State(null, "Minas Gerais");
 		State st2 = new State(null, "São Paulo");
@@ -92,6 +91,8 @@ public class EcommerceApiApplication implements CommandLineRunner {
 		p1.getCategories().addAll(Arrays.asList(cat1));
 		p2.getCategories().addAll(Arrays.asList(cat1, cat2));
 		p3.getCategories().addAll(Arrays.asList(cat1));
+		
+		productRepository.saveAll(Arrays.asList(p1, p2, p3));
 		
 		st1.getCities().addAll(Arrays.asList(cit1));
 		st2.getCities().addAll(Arrays.asList(cit2, cit3));
