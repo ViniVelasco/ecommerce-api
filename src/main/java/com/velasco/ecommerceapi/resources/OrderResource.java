@@ -15,11 +15,11 @@ import com.velasco.ecommerceapi.services.OrderService;
 public class OrderResource {
 	
 	@Autowired
-	private OrderService categoryService;
+	private OrderService service;
 	
 	@RequestMapping(value="/{id}",method=RequestMethod.GET)
-	public ResponseEntity<?> find(@PathVariable Integer id) {
-		Order obj = categoryService.search(id);
+	public ResponseEntity<Order> find(@PathVariable Integer id) {
+		Order obj = service.find(id);
 		return ResponseEntity.ok().body(obj);
 	}
 
