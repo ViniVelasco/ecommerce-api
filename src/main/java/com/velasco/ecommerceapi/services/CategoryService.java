@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.velasco.ecommerceapi.domain.Category;
 import com.velasco.ecommerceapi.repositories.CategoryRepository;
+import com.velasco.ecommerceapi.services.exceptions.ObjectNotFoundException;
 
 @Service
 public class CategoryService {
@@ -16,7 +17,8 @@ public class CategoryService {
 	
 	public Category search(Integer id) {
 		Optional<Category> obj = repo.findById(id);
-		return obj.orElse(null);
+		return obj.orElseThrow(() -> new ObjectNotFoundException(
+				"Objeto não encontrado! Id: " + id + ", Tipo " + Category.class.getName()));
 	}
 
 }
