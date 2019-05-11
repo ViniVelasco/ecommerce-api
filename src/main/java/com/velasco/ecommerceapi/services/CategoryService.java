@@ -11,6 +11,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import com.velasco.ecommerceapi.domain.Category;
+import com.velasco.ecommerceapi.dto.CategoryDTO;
 import com.velasco.ecommerceapi.repositories.CategoryRepository;
 import com.velasco.ecommerceapi.services.exceptions.DataIntegrityException;
 import com.velasco.ecommerceapi.services.exceptions.ObjectNotFoundException;
@@ -54,6 +55,10 @@ public class CategoryService {
 	public Page<Category> findPage(Integer page, Integer linesPerPage, String orderBy, String direction) {
 		PageRequest pageRequest = PageRequest.of(page,  linesPerPage, Direction.valueOf(direction), orderBy);
 		return repo.findAll(pageRequest);
+	}
+	
+	public Category fromDTO(CategoryDTO objDto) {
+		return new Category(objDto.getId(), objDto.getName());
 	}
 
 }
