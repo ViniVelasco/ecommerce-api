@@ -1,5 +1,6 @@
 package com.velasco.ecommerceapi;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,16 +9,23 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.velasco.ecommerceapi.domain.Address;
+import com.velasco.ecommerceapi.domain.BoletoPayment;
+import com.velasco.ecommerceapi.domain.CardPayment;
 import com.velasco.ecommerceapi.domain.Category;
 import com.velasco.ecommerceapi.domain.City;
 import com.velasco.ecommerceapi.domain.Client;
+import com.velasco.ecommerceapi.domain.Order;
+import com.velasco.ecommerceapi.domain.Payment;
 import com.velasco.ecommerceapi.domain.Product;
 import com.velasco.ecommerceapi.domain.State;
 import com.velasco.ecommerceapi.domain.enums.ClientType;
+import com.velasco.ecommerceapi.domain.enums.PaymentStatus;
 import com.velasco.ecommerceapi.repositories.AddressRepository;
 import com.velasco.ecommerceapi.repositories.CategoryRepository;
 import com.velasco.ecommerceapi.repositories.CityRepository;
 import com.velasco.ecommerceapi.repositories.ClientRepository;
+import com.velasco.ecommerceapi.repositories.OrderRepository;
+import com.velasco.ecommerceapi.repositories.PaymentRepository;
 import com.velasco.ecommerceapi.repositories.ProductRepository;
 import com.velasco.ecommerceapi.repositories.StateRepository;
 
@@ -42,6 +50,12 @@ public class EcommerceApiApplication implements CommandLineRunner {
 	
 	@Autowired
 	private AddressRepository addressRepository;
+	
+	@Autowired
+	private PaymentRepository paymentRepository;
+	
+	@Autowired
+	private OrderRepository orderRepository;
 	
 	public static void main(String[] args) {
 		SpringApplication.run(EcommerceApiApplication.class, args);
@@ -91,6 +105,22 @@ public class EcommerceApiApplication implements CommandLineRunner {
 		
 		clientRepository.saveAll(Arrays.asList(cli1));
 		addressRepository.saveAll(Arrays.asList(a1, a2));
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+		
+		Order ped1 = new Order(null, sdf.parse("30/09/2017 10:32"), cli1, a1);
+		Order ped2 = new Order(null, sdf.parse("10/10/2017 19:32"), cli1, a2);
+	
+		Payment pay1 = new CardPayment(null, PaymentStatus.QUITADO, ped1, 6);
+		ped1.setPayment(pay1);
+		
+		Payment pay2 = new BoletoPayment(null, PaymentStatus.PENDENTE, ped2, sdf.parse("20/10/2017 00:00"), null);
+		ped2.setPayment(pay2);
+		
+		cli1.getOrders().addAll(Arrays.asList(ped1, ped2));
+		
+		orderRepository.saveAll(Arrays.asList(ped1, ped2));
+		paymentRepository.saveAll(Arrays.asList(pay1, pay2));
 	}
 
 }
