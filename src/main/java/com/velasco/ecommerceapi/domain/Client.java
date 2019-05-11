@@ -14,6 +14,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.velasco.ecommerceapi.domain.enums.ClientType;
 
 @Entity
@@ -28,6 +29,7 @@ public class Client implements Serializable{
 	private String cpfCnpj;
 	private Integer type;
 	
+	@JsonManagedReference //cyclic json protector
 	@OneToMany(mappedBy="client")
 	private List<Address> address = new ArrayList<>();
 	
