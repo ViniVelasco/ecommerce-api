@@ -10,8 +10,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
+import com.velasco.ecommerceapi.domain.Address;
+import com.velasco.ecommerceapi.domain.City;
 import com.velasco.ecommerceapi.domain.Client;
+import com.velasco.ecommerceapi.domain.enums.ClientType;
 import com.velasco.ecommerceapi.dto.ClientDTO;
+import com.velasco.ecommerceapi.dto.ClientNewDTO;
+import com.velasco.ecommerceapi.repositories.AddressRepository;
 import com.velasco.ecommerceapi.repositories.ClientRepository;
 import com.velasco.ecommerceapi.services.exceptions.DataIntegrityException;
 import com.velasco.ecommerceapi.services.exceptions.ObjectNotFoundException;
@@ -22,10 +27,20 @@ public class ClientService {
 	@Autowired
 	private ClientRepository repo;
 	
+	@Autowired
+	private AddressRepository addressRepository;
+	
 	public Client find(Integer id) {
 		Optional<Client> obj = repo.findById(id);
 		return obj.orElseThrow(() -> new ObjectNotFoundException(
 				"Objeto não encontrado! Id: " + id + ", Tipo " + Client.class.getName()));
+	}
+	
+	public Client insert(Client obj) {
+		obj.setId(null); //new object guarantee
+		obj = repo.save(obj);
+		addressRepository.saveAll(obj.getAddress());
+		return obj;
 	}
 	
 	public Client udpate(Client obj) {
@@ -55,6 +70,22 @@ public class ClientService {
 	
 	public Client fromDTO(ClientDTO objDto) {
 		return new Client(objDto.getId(), objDto.getName(), objDto.getEmail(), null, null);
+	}
+	
+	public Client fromDTO(ClientNewDTO objDto) { //sobrecarga
+		Client cli = new Client(null, objDto.getName(), objDto.getEmail(), objDto.getCpfCnpj(), ClientType.toEnum(objDto.getType()));
+		City city = new City(objDto.getCityId(), null, null);
+		Address adr = new Address(null, objDto.getLogradouro(), objDto.getNumber(), objDto.getComplement(), objDto.getBairro(), objDto.getCep(), cli, city);
+		cli.getAddress().add(adr);
+		cli.getPhones().add(objDto.getPhone1());
+		
+		if(objDto.getPhone2() != null) {
+			cli.getPhones().add(objDto.getPhone2());
+		}
+		if(objDto.getPhone3() != null) {
+			cli.getPhones().add(objDto.getPhone3());
+		}
+		return cli;
 	}
 
 	private void updateData(Client newObj, Client obj) {
