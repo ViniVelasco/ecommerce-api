@@ -2,9 +2,11 @@ package com.velasco.ecommerceapi.domain;
 
 import javax.persistence.Entity;
 
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.velasco.ecommerceapi.domain.enums.PaymentStatus;
 
 @Entity
+@JsonTypeName("pagamentoComCartao")
 public class CardPayment  extends Payment {
 	private static final long serialVersionUID = 1L;
 	
