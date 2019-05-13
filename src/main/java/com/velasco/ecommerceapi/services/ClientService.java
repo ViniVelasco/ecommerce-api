@@ -8,6 +8,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.velasco.ecommerceapi.domain.Address;
@@ -23,6 +24,9 @@ import com.velasco.ecommerceapi.services.exceptions.ObjectNotFoundException;
 
 @Service
 public class ClientService {
+	
+	@Autowired
+	private BCryptPasswordEncoder bCrypt;
 	
 	@Autowired
 	private ClientRepository repo;
@@ -69,11 +73,11 @@ public class ClientService {
 	}
 	
 	public Client fromDTO(ClientDTO objDto) {
-		return new Client(objDto.getId(), objDto.getName(), objDto.getEmail(), null, null);
+		return new Client(objDto.getId(), objDto.getName(), objDto.getEmail(), null, null, null);
 	}
 	
 	public Client fromDTO(ClientNewDTO objDto) { //sobrecarga
-		Client cli = new Client(null, objDto.getName(), objDto.getEmail(), objDto.getCpfCnpj(), ClientType.toEnum(objDto.getType()));
+		Client cli = new Client(null, objDto.getName(), objDto.getEmail(), objDto.getCpfCnpj(), ClientType.toEnum(objDto.getType()), bCrypt.encode(objDto.getPassword()));
 		City city = new City(objDto.getCityId(), null, null);
 		Address adr = new Address(null, objDto.getLogradouro(), objDto.getNumber(), objDto.getComplement(), objDto.getBairro(), objDto.getCep(), cli, city);
 		cli.getAddress().add(adr);
