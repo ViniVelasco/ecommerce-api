@@ -21,6 +21,7 @@ import com.velasco.ecommerceapi.domain.Product;
 import com.velasco.ecommerceapi.domain.State;
 import com.velasco.ecommerceapi.domain.enums.ClientType;
 import com.velasco.ecommerceapi.domain.enums.PaymentStatus;
+import com.velasco.ecommerceapi.domain.enums.Profile;
 import com.velasco.ecommerceapi.repositories.AddressRepository;
 import com.velasco.ecommerceapi.repositories.CategoryRepository;
 import com.velasco.ecommerceapi.repositories.CityRepository;
@@ -121,17 +122,22 @@ public class DBService {
 		stateRepository.saveAll(Arrays.asList(st1, st2));
 		cityRepository.saveAll(Arrays.asList(cit1, cit2, cit3));
 
-		Client cli1 = new Client(null, "Maria Silva", "sasukegc@gmail.com", "36378912377", ClientType.PESSOAFISICA, bCrypt.encode("123456"));
-
+		Client cli1 = new Client(null, "Maria Silva", "sasukegc@gmail.com", "74533170", ClientType.PESSOAFISICA, bCrypt.encode("123456"));
 		cli1.getPhones().addAll(Arrays.asList("23631302833", "319379814"));
 
+		Client cli2 = new Client(null, "Ana Costa", "viniciusdesouzavelasco@gmail.com", "74055100", ClientType.PESSOAFISICA, bCrypt.encode("123456"));
+		cli2.getPhones().addAll(Arrays.asList("1987491421", "498294721"));
+		cli2.addProfile(Profile.ADMIN);
+		
 		Address a1 = new Address(null, "Rua Flores", "300", "Apt 303", "Jardim", "3883713", cli1, cit1);
 		Address a2 = new Address(null, "Avenida Matos", "105", "Sala 800", "Centro", "38777012", cli1, cit2);
-
+		Address a3 = new Address(null, "Avenida Floriano", "2106", null, "Centro", "74533170", cli2, cit2);
+		
 		cli1.getAddress().addAll(Arrays.asList(a1, a2));
+		cli2.getAddress().addAll(Arrays.asList(a3));
 
-		clientRepository.saveAll(Arrays.asList(cli1));
-		addressRepository.saveAll(Arrays.asList(a1, a2));
+		clientRepository.saveAll(Arrays.asList(cli1, cli2));
+		addressRepository.saveAll(Arrays.asList(a1, a2, a3));
 
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
