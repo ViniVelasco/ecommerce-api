@@ -35,6 +35,9 @@ public class OrderService {
 	@Autowired
 	private OrderItemRepository orderItemRepository;
 	
+	@Autowired
+	private ClientService clientService;
+	
 	public Order find(Integer id) {
 		Optional<Order> obj = repo.findById(id);
 		return obj.orElseThrow(() -> new ObjectNotFoundException(
@@ -45,6 +48,7 @@ public class OrderService {
 	public Order insert(Order obj) {
 		obj.setId(null);
 		obj.setInstant(new Date());
+		obj.setClient(clientService.find(obj.getClient().getId()));
 		obj.getPayment().setState(PaymentStatus.PENDENTE);
 		obj.getPayment().setOrder(obj);
 		if (obj.getPayment() instanceof BoletoPayment) {
@@ -56,11 +60,13 @@ public class OrderService {
 		paymentRepository.save(obj.getPayment());
 		for(OrderItem ip : obj.getItems()) {
 			ip.setDiscount(0.0);
-			ip.setPrice(productService.find(ip.getProduct().getId()).getPrice());
+			ip.setProduct(productService.find(ip.getProduct().getId()));
+			ip.setPrice(ip.getProduct().getPrice());
 			ip.setOrder(obj);
 		}
 		
 		orderItemRepository.saveAll(obj.getItems());
+		System.out.println(obj);
 		return obj;
 	}
 
