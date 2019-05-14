@@ -15,10 +15,13 @@ import com.velasco.ecommerceapi.domain.Address;
 import com.velasco.ecommerceapi.domain.City;
 import com.velasco.ecommerceapi.domain.Client;
 import com.velasco.ecommerceapi.domain.enums.ClientType;
+import com.velasco.ecommerceapi.domain.enums.Profile;
 import com.velasco.ecommerceapi.dto.ClientDTO;
 import com.velasco.ecommerceapi.dto.ClientNewDTO;
 import com.velasco.ecommerceapi.repositories.AddressRepository;
 import com.velasco.ecommerceapi.repositories.ClientRepository;
+import com.velasco.ecommerceapi.security.UserSS;
+import com.velasco.ecommerceapi.services.exceptions.AuthorizationException;
 import com.velasco.ecommerceapi.services.exceptions.DataIntegrityException;
 import com.velasco.ecommerceapi.services.exceptions.ObjectNotFoundException;
 
@@ -35,6 +38,11 @@ public class ClientService {
 	private AddressRepository addressRepository;
 	
 	public Client find(Integer id) {
+		
+		UserSS user = UserService.authenticated();
+		if(user == null || !user.hasRole(Profile.ADMIN) && !id.equals(user.getId())) {
+			throw new AuthorizationException("Acesso negado");
+		}
 		Optional<Client> obj = repo.findById(id);
 		return obj.orElseThrow(() -> new ObjectNotFoundException(
 				"Objeto não encontrado! Id: " + id + ", Tipo " + Client.class.getName()));
