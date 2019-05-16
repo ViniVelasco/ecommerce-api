@@ -59,7 +59,7 @@ public class ImageService {
 			(sourceImg.getWidth()/2) - (min/2), 
 			(sourceImg.getHeight()/2) - (min/2), 
 			min, 
-			min);		
+			min);
 	}
 	
 	public BufferedImage resize(BufferedImage sourceImg, int size) {
