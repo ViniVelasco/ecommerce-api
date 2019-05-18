@@ -23,7 +23,7 @@ import com.velasco.ecommerceapi.domain.enums.ClientType;
 import com.velasco.ecommerceapi.domain.enums.Profile;
 
 @Entity
-public class Client implements Serializable{
+public class Client implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@Id
@@ -140,10 +140,6 @@ public class Client implements Serializable{
 
 	public void setPassword(String password) {
 		this.password = password;
-	}
-
-	public void setType(Integer type) {
-		this.type = type;
 	}
 	
 	public Set<Profile> getProfiles() {
