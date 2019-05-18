@@ -13,7 +13,7 @@ import com.velasco.ecommerceapi.services.EmailService;
 import com.velasco.ecommerceapi.services.SmtpEmailService;
 
 @Configuration
-@Profile("dev")
+@Profile("prod")
 public class ProdConfig {
 	
 	@Autowired
